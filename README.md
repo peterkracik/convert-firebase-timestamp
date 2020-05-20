@@ -6,7 +6,7 @@ Script that converts firebase timestamp values to the JS date format
 * converts single value
 * possible to call in rxjs pipe
 
-## update document
+## How to use
 
 **document**
 
