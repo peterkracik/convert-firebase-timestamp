@@ -22,7 +22,7 @@ Script that converts firebase timestamp values to the JS date format
 return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
     map(doc => {
 		const data = doc.payload.data();
-		data.date = convertValue(data.date);
+		data.date = convertTimestamp(data.date);
 		return data;
 	})
 )
@@ -34,7 +34,7 @@ return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
 return this.db.collection('my-collection').doc(id)
   .snapshotChanges().pipe(
         map(doc => doc.payload.data()),
-        convertAllTimestamps(),
+        convertTimestampsPipe(),
     );
 )
 ```
