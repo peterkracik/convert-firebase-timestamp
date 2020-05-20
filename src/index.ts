@@ -43,7 +43,7 @@ export function convertTimestamps<T>(firebaseObject: T|T[]): T|T[] {
 			if (value && Array.isArray(value)) {
 				firebaseObject = {
 					...firebaseObject,
-					[key]: value.map(item => convertValue(item))
+					[key]: value.map(item => isTimestamp(item) ? convertValue(item) : convertTimestamps(item))
 				};
 				continue;
 			}
@@ -87,7 +87,6 @@ export function convertValue<T extends object>(value: T): T | Date {
 function isTimestamp(value: any): boolean {
 	if (value.hasOwnProperty('seconds') &&
 		value.hasOwnProperty('nanoseconds') &&
-		value.hasOwnProperty('toDate') &&
 		typeof value.toDate === 'function'
 	) {
 		return true;

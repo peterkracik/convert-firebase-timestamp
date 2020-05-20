@@ -173,4 +173,64 @@ describe('ConvertTimeStamp class', () => {
 		assert.typeOf(returnValue, 'object', 'is object date');
 		expect(returnValue.val).to.equal(param.val, 'Check date value');
 	});
+
+	it('should work for any other value', () => {
+		const d = Date();
+		const param = {
+			'date': {
+				'seconds': 1588284000,
+				'nanoseconds': 0,
+				toDate: () => d
+			},
+			'days': [
+				{
+					'date': {
+						'seconds': 1588284000,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'from': {
+						'seconds': 1588312800,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'to': {
+						'seconds': 1588341600,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'note': '',
+					'lunch': true
+				},
+				{
+					'date': {
+						'seconds': 1588543200,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'from': {
+						'seconds': 1588572000,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'to': {
+						'seconds': 1588600800,
+						'nanoseconds': 0,
+						toDate: () => d
+					},
+					'note': '',
+					'lunch': true,
+					toDate: () => d
+				}
+			]
+		};
+
+		const returnValue: any = convertTimestamps(param);
+		assert.typeOf(returnValue, 'object', 'is object date');
+		expect(returnValue.date).to.equal(d, 'Check date value');
+		expect(returnValue.days[0].to).to.equal(d, 'Check date value');
+		expect(returnValue.days[0].from).to.equal(d, 'Check date value');
+		expect(returnValue.days[1].to).to.equal(d, 'Check date value');
+		expect(returnValue.days[1].from).to.equal(d, 'Check date value');
+	});
 });
