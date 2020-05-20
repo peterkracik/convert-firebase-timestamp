@@ -4,7 +4,7 @@ import { MonoTypeOperatorFunction } from 'rxjs';
 /**
  * rxjs pipe to convert timestamps
  */
-export function convertAllTimestamps<T>(): MonoTypeOperatorFunction<T> {
+export function convertTimestampsPipe<T>(): MonoTypeOperatorFunction<T> {
 	return input$ => input$.pipe(
 		map( (val:any) => convertTimestamps(val) )
 	);
@@ -33,7 +33,7 @@ export function convertTimestamps<T>(firebaseObject: T|T[]): T|T[] {
 			if (value && isTimestamp(value)) {
 				firebaseObject = {
 					...firebaseObject,
-					[key]: convertValue(value)
+					[key]: convertTimestamp(value)
 				};
 				continue;
 			}
@@ -42,7 +42,7 @@ export function convertTimestamps<T>(firebaseObject: T|T[]): T|T[] {
 			if (value && Array.isArray(value)) {
 				firebaseObject = {
 					...firebaseObject,
-					[key]: value.map(item => isTimestamp(item) ? convertValue(item) : convertTimestamps(item))
+					[key]: value.map(item => isTimestamp(item) ? convertTimestamp(item) : convertTimestamps(item))
 				};
 				continue;
 			}
@@ -65,7 +65,7 @@ export function convertTimestamps<T>(firebaseObject: T|T[]): T|T[] {
  * convert any value
  * @param value
  */
-export function convertValue<T extends object>(value: T): T | Date {
+export function convertTimestamp<T extends object>(value: T): T | Date {
 	if (value === null || typeof value === 'undefined') return value;
 
 	if (isTimestamp(value)) {

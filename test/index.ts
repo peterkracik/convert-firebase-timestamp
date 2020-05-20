@@ -1,7 +1,7 @@
 'use strict';
 
 import { expect, assert } from 'chai';
-import { convertTimestamps, convertAllTimestamps, convertValue } from '../dist/index';
+import { convertTimestamps, convertTimestampsPipe, convertTimestamp } from '../dist/index';
 import { of } from 'rxjs';
 
 describe('ConvertTimeStamp class', () => {
@@ -116,7 +116,7 @@ describe('ConvertTimeStamp class', () => {
 		};
 
 		of(param).pipe(
-			convertAllTimestamps()
+			convertTimestampsPipe()
 		).subscribe((returnValue:any) => {
 			expect(returnValue.id).to.equal(param.id, 'Check id value');
 			assert.typeOf(returnValue.currentDateProperty, 'string', 'is type date');
@@ -142,7 +142,7 @@ describe('ConvertTimeStamp class', () => {
 		];
 
 		of(param).pipe(
-			convertAllTimestamps()
+			convertTimestampsPipe()
 		).subscribe((returnValue:any) => {
 			expect(returnValue[0].id).to.equal(param[0].id, 'Check id value');
 			expect(returnValue[1].id).to.equal(param[1].id, 'Check id value');
@@ -161,7 +161,7 @@ describe('ConvertTimeStamp class', () => {
 		const d = Date();
 		const param = { seconds: 1589952118, nanoseconds: 12345, toDate: () => d };
 
-		const returnValue: any = convertValue(param);
+		const returnValue: any = convertTimestamp(param);
 		assert.typeOf(returnValue, 'string', 'is type date');
 		expect(returnValue).to.equal(d, 'Check date value');
 	});
@@ -169,7 +169,7 @@ describe('ConvertTimeStamp class', () => {
 	it('should work for any other value', () => {
 		const param = { val: 'test'};
 
-		const returnValue: any = convertValue(param);
+		const returnValue: any = convertTimestamp(param);
 		assert.typeOf(returnValue, 'object', 'is object date');
 		expect(returnValue.val).to.equal(param.val, 'Check date value');
 	});
