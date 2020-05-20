@@ -1,6 +1,6 @@
 {
   "name": "convert-firebase-timestamp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Convert Firebase timestamps to js native date in fetched object",
   "keywords": [
     "firebase",

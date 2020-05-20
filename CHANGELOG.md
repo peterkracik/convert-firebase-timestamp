@@ -1,3 +1,7 @@
+## [0.0.4](https://github.com/peterkracik/convert-firebase-timestamp/compare/v0.0.3...v0.0.4) (2020-05-20)
+
+
+
 ## [0.0.3](https://github.com/peterkracik/convert-firebase-timestamp/compare/v0.0.2...v0.0.3) (2020-05-20)
 
 
