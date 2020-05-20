@@ -3,7 +3,6 @@ import { MonoTypeOperatorFunction } from 'rxjs';
 
 /**
  * rxjs pipe to convert timestamps
- * @param property
  */
 export function convertAllTimestamps<T>(): MonoTypeOperatorFunction<T> {
 	return input$ => input$.pipe(

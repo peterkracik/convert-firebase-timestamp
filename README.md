@@ -8,14 +8,16 @@ Script that converts firebase timestamp values to the JS date format
 
 ## update document
 
-
 **document**
+
 ```typescript
  return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
-    map(doc => convertTimestamps(doc.payload)
+    map(doc => convertTimestamps(doc.payload.data())
 )
 ```
+
 **single value**
+
 ```typescript
 return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
     map(doc => {
@@ -26,12 +28,13 @@ return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
 )
 ```
 **in pipe**
+! don't call it before map, the original document is too large to be convert and it will throw recursion exception
+
 ```typescript
-return this.db.collection('my-collection').doc(id).snapshotChanges().pipe(
-	convertAllTimestamps()
-    map(doc => {
-		...
-		return data;
-	})
+return this.db.collection('my-collection').doc(id)
+  .snapshotChanges().pipe(
+        map(doc => doc.payload.data()),
+        convertAllTimestamps(),
+    );
 )
 ```
