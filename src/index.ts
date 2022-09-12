@@ -1,10 +1,10 @@
 import { map } from 'rxjs/operators';
-import { OperatorFunction } from 'rxjs';
+import { MonoTypeOperatorFunction } from 'rxjs';
 
 /**
  * rxjs pipe to convert timestamps
  */
-export function convertTimestampsPipe<T>(): OperatorFunction<T, WithTimestampsAsDates<T>> {
+export function convertTimestampsPipe<T>(): MonoTypeOperatorFunction<T> {
 	return input$ => input$.pipe(
 		map( (val:any) => convertTimestamps(val) )
 	);
@@ -14,13 +14,13 @@ export function convertTimestampsPipe<T>(): OperatorFunction<T, WithTimestampsAs
  * convert any timestamp properties to js date format
  * @param firebaseObject
  */
-export function convertTimestamps<T>(firebaseObject: T): WithTimestampsAsDates<T> {
-	if (!firebaseObject) return firebaseObject as WithTimestampsAsDates<T>;
+export function convertTimestamps<T>(firebaseObject: T|T[]): T|T[] {
+	if (!firebaseObject) return firebaseObject;
 	// if (typeof firebaseObject === 'undefined') return firebaseObject;
 
 	// if an array was passed
 	if (Array.isArray(firebaseObject)) {
-		return firebaseObject.map((item) => convertTimestamps(item)) as WithTimestampsAsDates<T>
+		return firebaseObject.map((item: any) => convertTimestamps(item))
 	}
 
 	// if its a map (object)
@@ -58,35 +58,35 @@ export function convertTimestamps<T>(firebaseObject: T): WithTimestampsAsDates<T
 
 		}
 	}
-	return firebaseObject as WithTimestampsAsDates<T>;
+	return firebaseObject;
 };
 
 /**
  * convert any value
  * @param value
  */
-export function convertTimestamp<T extends object>(value: T): WithTimestampsAsDates<T> {
+export function convertTimestamp<T extends object>(value: T): T | Date {
 	if (value === null || typeof value === 'undefined') return value;
 
 	if (isTimestamp(value)) {
 		try {
-			return value.toDate() as WithTimestampsAsDates<T>;
+			return (value as Timestamp).toDate();
 		} catch {
-			return value as WithTimestampsAsDates<T>;
+			return value;
 		}
 	}
 
-	return value as WithTimestampsAsDates<T>;
+	return value;
 }
 
 /**
  * verify if value is timestamp
  * @param value
  */
-function isTimestamp(value: any): value is Timestamp {
-	if (value?.hasOwnProperty('seconds') &&
-		value?.hasOwnProperty('nanoseconds') &&
-		typeof value?.toDate === 'function'
+function isTimestamp(value: any): boolean {
+	if (value.hasOwnProperty('seconds') &&
+		value.hasOwnProperty('nanoseconds') &&
+		typeof value.toDate === 'function'
 	) {
 		return true;
 	}
@@ -100,42 +100,3 @@ function isTimestamp(value: any): value is Timestamp {
 interface Timestamp {
 	toDate(): Date;
 }
-
-type WithTimestampsAsDates<T> = DeepReplace<T, [Timestamp, Date]>;
-
-/**
- * replace occurrences of `M[x][0]` in `T` with `M[x][1]` recursively
- * @example
- * ```
- * const u: DeepReplace<
- *   {
- *     a: {
- *       b: [Timestamp];
- *       c: string;
- *     };
- *     x: Timestamp;
- *   },
- *   [Timestamp, Date]
- * > = {
- *   a: {
- *     b: [new Date()],
- *     c: "...",
- *   },
- *   x: new Date(),
- * };
- * ```
- * @note https://stackoverflow.com/a/60437613
- */
-type DeepReplace<T, M extends [any, any]> = {
-  [P in keyof T]: T[P] extends M[0]
-    ? Replacement<M, T[P]>
-    : T[P] extends object
-    ? DeepReplace<T[P], M>
-    : T[P];
-};
-
-type Replacement<M extends [any, any], T> = M extends any
-  ? [T] extends [M[0]]
-    ? M[1]
-    : never
-  : never;
