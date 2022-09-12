@@ -1,7 +1,7 @@
 'use strict';
 
 import { expect, assert } from 'chai';
-import { convertTimestamps, convertTimestampsPipe, convertTimestamp } from '../dist/index';
+import { convertTimestamps, convertTimestampsPipe, convertTimestamp, WithTimestampsAsDates, Timestamp } from '../dist/index';
 import { of } from 'rxjs';
 
 describe('ConvertTimeStamp class', () => {
@@ -22,6 +22,12 @@ describe('ConvertTimeStamp class', () => {
 		const returnValue: any = convertTimestamps(param);
 		assert.typeOf(returnValue, 'undefined', 'is string');
 		expect(returnValue).to.equal(param, 'returns the value passed as a parameter');
+	});
+	it('should return Date', () => {
+		const d = Date();
+		const param = { seconds: 1589952118, nanoseconds: 12345, toDate: () => d };
+		const returnValue: any = convertTimestamps(param);
+		expect(returnValue).to.equal(d, 'Check return value');
 	});
 	it('should return array', () => {
 		const d = Date();
@@ -232,5 +238,47 @@ describe('ConvertTimeStamp class', () => {
 		expect(returnValue.days[0].from).to.equal(d, 'Check date value');
 		expect(returnValue.days[1].to).to.equal(d, 'Check date value');
 		expect(returnValue.days[1].from).to.equal(d, 'Check date value');
+	});
+});
+
+describe('TypeScript Mapping', () => {
+	it('should accept Dates in place of Timestamps', () => {
+		const inObject: WithTimestampsAsDates<{ a: Timestamp }> = { a: new Date() };
+		const inArray: WithTimestampsAsDates<Timestamp[]> = [
+			new Date(),
+			new Date(),
+		];
+		const inTupel: WithTimestampsAsDates<[Timestamp, symbol, Timestamp]> = [
+			new Date(),
+			Symbol.for('example'),
+			new Date(),
+		];
+		const asNull: WithTimestampsAsDates<null> = null;
+		const asUndefined: WithTimestampsAsDates<undefined> = undefined;
+		const asSelf: WithTimestampsAsDates<Timestamp> = new Date();
+		const nested: WithTimestampsAsDates<{
+			a: {
+				b: Timestamp[];
+				c: string;
+			};
+			x: Timestamp;
+		}> = {
+			a: {
+				b: [new Date()],
+				c: '...',
+			},
+			x: new Date(),
+		};
+
+		// simply make sure TypeScript acceps the above - no assertions necessary.
+		expect([
+			inObject,
+			inArray,
+			inTupel,
+			asNull,
+			asUndefined,
+			asSelf,
+			nested
+		])
 	});
 });
