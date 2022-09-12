@@ -1,3 +1,6 @@
+## 0.0.5 (2022-09-12)
+- Map timestamp to date types [PR](https://github.com/peterkracik/convert-firebase-timestamp/pull/12)
+
 ## [0.0.4](https://github.com/peterkracik/convert-firebase-timestamp/compare/v0.0.3...v0.0.4) (2020-05-20)
 
 
